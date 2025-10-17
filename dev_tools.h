@@ -46,7 +46,7 @@
 #endif
 
 #define OKM C_WHITE "" B_C_WHITE C_GREEN "--" C_R C_WHITE B_C_DIM " "
-#define DOTM C_WHITE "" B_C_WHITE C_BLUE "--" C_R C_WHITE B_C_DIM " "
+#define INFM C_WHITE "" B_C_WHITE C_BLUE "--" C_R C_WHITE B_C_DIM " "
 #define ERRM                                                                   \
 	C_WHITE "" B_C_WHITE C_RED "=" BLINK "×" BLINK_OFF                    \
 		  "=" C_R C_WHITE B_C_DIM " "
@@ -156,7 +156,7 @@
                                                                                \
 		fprintf(                                                           \
 		    stdout,                                                        \
-		    DOTM C_BLUE                                                    \
+		    INFM C_BLUE                                                    \
 		    "TIMER_CPU " C_R B_C_DIM "(" C_BLUE #name C_R B_C_DIM          \
 		    ") " C_R B_C_DIM POSITION " : (" C_BLUE "%.6fs" C_R B_C_DIM    \
 		    ")" __VA_OPT__(" : " C_BLUE) __VA_ARGS__ END,                  \
@@ -179,7 +179,7 @@
 			  1e9;                                                       \
 		fprintf(                                                           \
 		    stdout,                                                        \
-		    DOTM C_BLUE                                                    \
+		    INFM C_BLUE                                                    \
 		    "TIMER_REAL " C_R B_C_DIM "(" C_BLUE #name C_R B_C_DIM         \
 		    ") " C_R B_C_DIM POSITION " : (" C_BLUE "%.6fs" C_R B_C_DIM    \
 		    ")" __VA_OPT__(" : " C_BLUE) __VA_ARGS__ END,                  \
