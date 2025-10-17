@@ -75,7 +75,7 @@
 				   " : " C_YELLOW fmt END,                             \
 		    POS, ##__VA_ARGS__                                             \
 		);                                                                 \
-		TRAP;                                                  \
+		TRAP;                                                              \
 		exit(EX_SOFTWARE);                                                 \
 		UNREACHABLE();                                                     \
 	} while (0)
@@ -128,7 +128,7 @@
 					   " : " C_RED fmt END,                          \
 			    POS, ##__VA_ARGS__                                       \
 			);                                                           \
-			TRAP;                                            \
+			TRAP;                                                        \
 			exit(1);                                                     \
 		} else if (LOGLVL > 2) {                                           \
 			fprintf(                                                     \
@@ -147,45 +147,51 @@
 #endif
 
 #if (TIMER)
+
 #define TIMER_CPU_START(name) clock_t _timer_##name = clock()
 
 #define TIMER_CPU_END(name, ...)                                               \
-	do {                                                                     \
-		double _elapsed_##name =                                           \
-		    (double)(clock() - _timer_##name) / CLOCKS_PER_SEC;            \
-                                                                               \
-		fprintf(                                                           \
-		    stdout,                                                        \
-		    INFM C_BLUE                                                    \
-		    "TIMER_CPU " C_R B_C_DIM "(" C_BLUE #name C_R B_C_DIM          \
-		    ") " C_R B_C_DIM POSITION " : (" C_BLUE "%.6fs" C_R B_C_DIM    \
-		    ")" __VA_OPT__(" : " C_BLUE) __VA_ARGS__ END,                  \
-		    POS, _elapsed_##name, ##__VA_ARGS__                            \
-		);                                                                 \
-	} while (0)
+    do {                                                                       \
+        double _elapsed_##name =                                              \
+            (double)(clock() - _timer_##name) / CLOCKS_PER_SEC;               \
+        /* print header + elapsed (no END / newline) */                       \
+        fprintf(                                                               \
+            stdout,                                                            \
+            INFM C_BLUE                                                        \
+            "TIMER_CPU " C_R B_C_DIM "(" C_BLUE #name C_R B_C_DIM              \
+            ") " C_R B_C_DIM POSITION " : (" C_BLUE "%.6fs" C_R B_C_DIM ")" ,  \
+            POS, _elapsed_##name                                               \
+        );                                                                     \
+        /* optionally print " : <fmt...>" and its args */                     \
+        __VA_OPT__(fprintf(stdout, " : " C_BLUE __VA_ARGS__);)                \
+        /* finally print END (contains color reset + newline) */              \
+        fprintf(stdout, END);                                                  \
+    } while (0)
 
 #define TIMER_REAL_START(name)                                                 \
 	struct timespec _timer_real_##name##_start;                              \
 	clock_gettime(CLOCK_MONOTONIC, &_timer_real_##name##_start)
+
 #define TIMER_REAL_END(name, ...)                                              \
-	do {                                                                     \
-		struct timespec _timer_real_##name##_end;                          \
-		clock_gettime(CLOCK_MONOTONIC, &_timer_real_##name##_end);         \
-		double _elapsed_real_##name =                                      \
-		    (_timer_real_##name##_end.tv_sec -                             \
-		     _timer_real_##name##_start.tv_sec) +                          \
-		    (_timer_real_##name##_end.tv_nsec -                            \
-		     _timer_real_##name##_start.tv_nsec) /                         \
-			  1e9;                                                       \
-		fprintf(                                                           \
-		    stdout,                                                        \
-		    INFM C_BLUE                                                    \
-		    "TIMER_REAL " C_R B_C_DIM "(" C_BLUE #name C_R B_C_DIM         \
-		    ") " C_R B_C_DIM POSITION " : (" C_BLUE "%.6fs" C_R B_C_DIM    \
-		    ")" __VA_OPT__(" : " C_BLUE) __VA_ARGS__ END,                  \
-		    POS, _elapsed_real_##name, ##__VA_ARGS__                       \
-		);                                                                 \
-	} while (0)
+    do {                                                                       \
+        struct timespec _timer_real_##name##_end;                             \
+        clock_gettime(CLOCK_MONOTONIC, &_timer_real_##name##_end);             \
+        double _elapsed_real_##name =                                          \
+            (_timer_real_##name##_end.tv_sec - _timer_real_##name##_start.tv_sec) + \
+            (_timer_real_##name##_end.tv_nsec - _timer_real_##name##_start.tv_nsec) / 1e9; \
+        /* print header + elapsed (no END / newline) */                       \
+        fprintf(                                                               \
+            stdout,                                                            \
+            INFM C_BLUE                                                        \
+            "TIMER_REAL " C_R B_C_DIM "(" C_BLUE #name C_R B_C_DIM             \
+            ") " C_R B_C_DIM POSITION " : (" C_BLUE "%.6fs" C_R B_C_DIM ")" ,  \
+            POS, _elapsed_real_##name                                           \
+        );                                                                     \
+        /* optionally print " : <fmt...>" and its args */                     \
+        __VA_OPT__(fprintf(stdout, " : " C_BLUE __VA_ARGS__);)                \
+        /* finally print END (contains color reset + newline) */              \
+        fprintf(stdout, END);                                                  \
+    } while (0)
 
 #else
 #define TIMER_CPU_START(name)                                                  \
