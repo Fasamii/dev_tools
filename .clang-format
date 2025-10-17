@@ -1,0 +1,20 @@
+BasedOnStyle: LLVM
+
+IndentWidth: 6
+TabWidth: 6
+UseTab: Always
+
+AlignAfterOpenBracket: BlockIndent
+AlignArrayOfStructures: Left
+AlignConsecutiveAssignments: Consecutive
+
+AllowAllArgumentsOnNextLine: false
+
+AllowShortBlocksOnASingleLine: Empty
+
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: WithoutElse
+
+BinPackParameters: false
+
+AlwaysBreakAfterDefinitionReturnType: None
